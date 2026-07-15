@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cotizador Profesional Constructora Zuñiga y Asociados</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
+        input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+        input[type=number] { -moz-appearance: textfield; }
+        .input-clean { background: transparent; border: 1px solid transparent; border-bottom: 1px solid #e2e8f0; width: 100%; padding: 4px 8px; transition: all 0.2s; color: #334155; }
+        .input-clean:focus { outline: none; border-bottom: 1px solid #3b82f6; background: white; border-radius: 4px; }
+        @media print {
+
+    body{
+        background:white;
+        padding:0 !important;
+    }
+
+    .no-print{
+        display:none !important;
+    }
+
+    .ganancia-col{
+        display:none !important;
+    }
+
+    .ocultar-pdf{
+        display:none !important;
+    }
+
+    input{
+        border:none !important;
+        background:transparent !important;
+    }
+
+}
+    </style>
+</head>
+<body class="p-4 md:p-8 text-slate-800">
+
+<div class="max-w-[1400px] mx-auto bg-white rounded-xl shadow-xl overflow-hidden flex flex-col lg:flex-row min-h-[90vh]">
+    <div class="w-full lg:w-3/4 p-6 md:p-8 lg:pr-10">
+        <header class="mb-8 flex flex-col md:flex-row justify-between items-start md:items-end border-b border-gray-200 pb-4 gap-4">
+            <div>
+                <h1 class="text-3xl font-bold text-gray-900">Constructora Zuñiga y Asociados</h1>
+                <div class="mt-2 flex items-center text-gray-500">
+                    <span class="mr-2">Proyecto:</span>
+                    <input type="text" id="nombreProyecto" class="border-b border-gray-300 focus:outline-none focus:border-blue-500 bg-transparent text-gray-800 font-semibold w-64 md:w-80" value="Canales y Término 375m2">
+                </div>
+            </div>
+            <button onclick="window.print()" class="no-print bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2.5 px-6 rounded shadow transition shrink-0">Imprimir / PDF</button>
+        </header>
+
+        <div class="mb-10">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-xl font-bold text-slate-800 flex items-center gap-2">
+                    <svg class="w-6 h-6 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg> 
+                    Conceptos de Cotización
+                </h2>
+                <button onclick="agregarConcepto()" class="no-print text-sm bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 font-semibold py-1.5 px-4 rounded transition">+ Añadir Fila</button>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm text-left border-collapse">
+                    <thead>
+                        <tr class="text-[11px] uppercase tracking-wider text-white">
+                            <th class="p-3 bg-slate-900 w-16 text-center rounded-tl-lg">Cant.</th>
+                            <th class="p-3 bg-slate-900 min-w-[350px]">Concepto (Material / Mano de Obra)</th>
+                            <th class="p-3 bg-slate-900 w-28 text-right ocultar-pdf">
+    Costo U. Real
+</th>
+
+<th class="p-3 bg-slate-900 w-28 text-right ocultar-pdf">
+    Total Real
+</th>
+
+<th class="p-3 bg-slate-900 w-28 text-right ocultar-pdf">
+    Subtotal (+16%)
+</th>
+
+<th id="titulo-total"
+    class="p-3 bg-blue-800 w-32 text-right font-bold">
+    Total General
+</th>
+
+<th class="p-3 bg-slate-900 w-28 text-center text-green-400 ganancia-col ocultar-pdf">
+    Ganancia
+</th>
+                            <th class="p-3 bg-slate-900 w-10 rounded-tr-lg no-print"></th>
+                        </tr>
+                    </thead>
+                    <tbody id="tb-conceptos" class="divide-y divide-gray-100"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="no-print bg-gradient-to-br from-amber-50 via-yellow-50 to-orange-100 border border-amber-400 rounded-xl p-6 shadow-md mb-6 relative overflow-hidden">
+            <div class="flex justify-between items-start mb-2 relative z-10">
+                <div>
+                    <h2 class="text-lg font-bold text-amber-900 flex items-center gap-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg> 
+                        Cálculo de Mano de Obra (Herramienta Interna)
+                    </h2>
+                    <p class="text-sm text-amber-800 mt-1">Desglosa aquí tus trabajos para calcular el total. Puedes transferir el total a los conceptos principales.</p>
+                </div>
+                <button onclick="agregarManoObra()" class="text-sm bg-white/70 border border-amber-400 text-amber-900 hover:bg-white font-semibold py-1.5 px-4 rounded shadow-sm transition">+ Añadir Fila</button>
+            </div>
+            <div class="mt-4 bg-white shadow-sm rounded-lg p-2 border border-amber-400/50 shadow-inner relative z-10">
+                <table class="w-full text-sm text-left">
+                    <thead>
+                        <tr class="text-[10px] uppercase text-amber-800 tracking-wider font-bold">
+                            <th class="p-2 w-20 text-center">Cant.</th>
+                            <th class="p-2">Concepto</th>
+                            <th class="p-2 w-32 text-right">Costo U.</th>
+                            <th class="p-2 w-32 text-right">Total Real</th>
+                            <th class="p-2 w-10"></th>
+                        </tr>
+                    </thead>
+                    <tbody id="tb-mano-obra" class="divide-y divide-amber-100"></tbody>
+                </table>
+            </div>
+            <div class="mt-4 flex flex-col md:flex-row items-end justify-between border-t border-amber-200 pt-4">
+                <div class="text-right w-full md:w-auto md:pr-10 mb-4 md:mb-0">
+                    <span class="text-amber-900 font-bold mr-4">Costo Base Mano de Obra:</span>
+                    <span id="mo-total-base" class="text-lg font-bold text-amber-900">$0</span>
+                </div>
+                <button onclick="transferirManoObra()" class="w-full md:w-auto bg-[#d97706] hover:bg-[#b45309] text-white font-semibold py-2.5 px-6 rounded-lg shadow-md transition text-sm">Transferir a Conceptos</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="w-full lg:w-1/4 bg-white border-t lg:border-t-0 lg:border-l lg:border-t-0 lg:border-l border-gray-200 p-6 md:p-8 flex flex-col">
+        <h3 class="text-sm font-bold text-gray-500 uppercase tracking-wider mb-6">Resumen Cliente</h3>
+        <div class="space-y-6">
+            <div class="bg-[#fffbeb] p-4 rounded-lg border border-[#fde68a]">
+                <span class="block text-sm font-bold text-amber-900 mb-1">Materiales y M.O.</span>
+                <span id="res-suma" class="block text-xl font-bold text-amber-700 text-right">$0</span>
+            </div>
+            <div class="bg-[#eff6ff] p-4 rounded-lg border border-blue-100">
+                <span class="block text-sm font-bold text-blue-900 mb-1">Honorarios Aaron Zuñiga</span>
+                <span id="res-hon" class="block text-xl font-bold text-blue-700 text-right">$0</span>
+                <span class="block text-[11px] text-blue-500 mt-2">15% sobre Conceptos</span>
+            </div>
+        </div>
+        <div class="mt-6 bg-green-50 p-4 rounded-lg border border-green-200 no-print shadow-sm">
+            <div class="flex items-center gap-1 mb-2">
+                <svg class="w-4 h-4 text-green-600" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
+                <span class="text-[11px] font-bold text-green-800 uppercase tracking-wide">Ganancia Total AARON ZUÑIGA</span>
+            </div>
+            <span id="res-ganancia-total" class="block text-2xl font-black text-green-700 text-right">$0</span>
+        </div>
+        <div class="mt-auto pt-8 border-t border-gray-200">
+            <div class="flex flex-col items-end">
+                <div class="flex items-end justify-between w-full mb-1">
+                    <span class="text-sm font-bold text-slate-900 uppercase">Gran Total</span>
+                    <span id="res-gran-total" class="text-3xl font-black text-slate-900 tracking-tight">$0</span>
+                </div>
+                <span class="text-[11px] text-gray-500">Cantidad a presentar al cliente</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const fmt = new Intl.NumberFormat('es-MX', { style: 'currency', currency: 'MXN', minimumFractionDigits: 0, maximumFractionDigits: 0 });
+
+    let conceptos = [ { cant: 10, desc: "ESPUMA POLIURETANO", costo: 180 }, { cant: 1, desc: "MICROALAMBRE KG", costo: 385 }, { cant: 2, desc: "POLIURETANO PARA EMPALMES", costo: 165 }, { cant: 1, desc: "MANO DE OBRA GENERAL", costo: 5558 } ];
+    let manoObra = [ { cant: 22.4, desc: "ZOCLOS M LINEALES", costo: 100 }, { cant: 18, desc: "PISOS CUARTOS", costo: 50 }, { cant: 14, desc: "PISOS PATIOS", costo: 99 }, { cant: 17.8, desc: "MUROS PATIO LEVANTAR", costo: 58 } ];
+
+    function render() {
+        const tbC = document.getElementById('tb-conceptos');
+        tbC.innerHTML = '';
+        let sumaTotalCliente = 0;
+        let sumaGananciaConceptos = 0;
+
+        conceptos.forEach((item, i) => {
+            let totalReal = Math.round(item.cant * item.costo);
+            let subtotal = Math.round(totalReal * 1.16);
+            let totalCliente = Math.round(subtotal * 1.20);
+            let ganancia = totalCliente - totalReal;
+            sumaTotalCliente += totalCliente;
+            sumaGananciaConceptos += ganancia;
+
+            tbC.innerHTML += `
+            <tr class="hover:bg-gray-50 transition border-b border-gray-100">
+                <td class="p-2"><input type="number" class="input-clean text-center font-medium" value="${item.cant}" onchange="conceptos[${i}].cant=parseFloat(this.value)||0; render()"></td>
+                <td class="p-2"><input type="text" class="input-clean uppercase text-xs font-semibold" value="${item.desc}" onchange="conceptos[${i}].desc=this.value.toUpperCase(); render()"></td>
+                <td class="p-2 flex items-center justify-end text-sm ocultar-pdf">
+    <span class="text-gray-400 mr-1">$</span>
+
+    <input type="number"
+           class="input-clean text-right w-20"
+           value="${item.costo}"
+           onchange="conceptos[${i}].costo=parseFloat(this.value)||0; render()">
+</td>
+
+<td class="p-3 text-right text-gray-500 text-sm ocultar-pdf">
+    ${fmt.format(totalReal)}
+</td>
+
+<td class="p-3 text-right text-gray-500 text-sm ocultar-pdf">
+    ${fmt.format(subtotal)}
+</td>
+
+<td class="p-3 text-right font-bold text-blue-900 bg-blue-50/50">
+    ${fmt.format(totalCliente)}
+</td>
+
+<td class="p-3 text-right text-green-500 font-semibold text-sm ganancia-col ocultar-pdf">
+    ${fmt.format(ganancia)}
+</td>
+                <td class="p-2 text-center no-print">
+                    <button onclick="conceptos.splice(${i},1); render()" class="text-red-400 hover:text-red-600 transition p-1">X</button>
+                </td>
+            </tr>`;
+        });
+
+        const tbM = document.getElementById('tb-mano-obra');
+        tbM.innerHTML = '';
+        let sumaManoObraReal = 0;
+        manoObra.forEach((item, i) => {
+            let totalReal = Math.round(item.cant * item.costo);
+            sumaManoObraReal += totalReal;
+            tbM.innerHTML += `
+            <tr class="hover:bg-amber-50 transition">
+                <td class="p-1"><input type="number" class="input-clean text-center text-sm" value="${item.cant}" onchange="manoObra[${i}].cant=parseFloat(this.value)||0; render()"></td>
+                <td class="p-1"><input type="text" class="input-clean uppercase text-xs" value="${item.desc}" onchange="manoObra[${i}].desc=this.value.toUpperCase(); render()"></td>
+                <td class="p-1 flex items-center justify-end text-sm">
+                    <span class="text-amber-700/50 mr-1">$</span>
+                    <input type="number" class="input-clean text-right w-20" value="${item.costo}" onchange="manoObra[${i}].costo=parseFloat(this.value)||0; render()">
+                </td>
+                <td class="p-2 text-right text-amber-900 text-sm font-medium">${fmt.format(totalReal)}</td>
+                <td class="p-1 text-center">
+                    <button onclick="manoObra.splice(${i},1); render()" class="text-red-400 hover:text-red-600 transition p-1">X</button>
+                </td>
+            </tr>`;
+        });
+
+        document.getElementById('mo-total-base').innerText = fmt.format(sumaManoObraReal);
+
+        let honorarios = Math.round(sumaTotalCliente * 0.15);
+        let granTotal = sumaTotalCliente + honorarios;
+        let gananciaTotalAaron = sumaGananciaConceptos + honorarios;
+
+        document.getElementById('res-suma').innerText = fmt.format(sumaTotalCliente);
+        document.getElementById('res-hon').innerText = fmt.format(honorarios);
+        document.getElementById('res-gran-total').innerText = fmt.format(granTotal);
+        document.getElementById('res-ganancia-total').innerText = fmt.format(gananciaTotalAaron);
+    }
+
+    function agregarConcepto() { conceptos.push({cant: 1, desc: "", costo: 0}); render(); }
+    function agregarManoObra() { manoObra.push({cant: 1, desc: "", costo: 0}); render(); }
+    function transferirManoObra() { 
+        let total = manoObra.reduce((sum, item) => sum + Math.round(item.cant * item.costo), 0);
+        conceptos.push({ cant: 1, desc: "MANO DE OBRA GENERAL", costo: total }); 
+        render(); 
+    }
+window.addEventListener("beforeprint",function(){
+
+    document.getElementById("titulo-total").innerHTML="TOTAL";
+
+});
+
+window.addEventListener("afterprint",function(){
+
+    document.getElementById("titulo-total").innerHTML="TOTAL GENERAL";
+
+});
+
+    window.onload = render;
+</script>
+</body>
+</html>
